@@ -29,13 +29,13 @@ Objectif : maîtriser la chaîne BI de bout en bout (**OLTP ➔ ETL ➔ Data War
   - `order_items` (quantité, prix unitaire facturé au moment de l'achat, coût unitaire)
   - `payments` (méthode de paiement, statut, montant, date de transaction)
   - `shipments` / `returns` (transporteur, délais de livraison, retours et motifs)
-- [ ] Créer des Seeders réalistes sur **10 ans** :
+- [x] Créer des Seeders réalistes sur **10 ans** :
   - Croissance progressive du volume d'année en année
   - Saisonnalité (pics en novembre/décembre, soldes)
   - Comportements clients réalistes (clients récurrents, taux d'annulation/retour)
   - Imperfections volontaires réalistes (casse mixte, espaces superflus, quelques champs optionnels `NULL`) pour exercer le nettoyage ETL
-- [ ] Mettre en place un **script d'exécution massif** (chunked bulk insert / orchestrateur Python ou Artisan) pour générer **1M+ à plusieurs millions de lignes** sans saturer la RAM
-- [ ] Valider les volumes générés et la cohérence temporelle sur 10 ans
+- [x] Mettre en place un **script d'exécution massif** (chunked bulk insert / orchestrateur Python ou Artisan) pour générer **1M+ à plusieurs millions de lignes** sans saturer la RAM
+- [x] Valider les volumes générés et la cohérence temporelle sur 10 ans
 
 **Notions apprises :** Modélisation OLTP (3NF), génération de données réalistes à grande échelle, performances d'insertion PostgreSQL.
 
