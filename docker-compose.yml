@@ -1,0 +1,76 @@
+services:
+  postgres-dw:
+    image: postgres:16-alpine
+    container_name: postgres-dw
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+      - ./postgres-init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - bi-net
+
+  hop-web:
+    image: apache/hop-web:2.20.0
+    container_name: hop-web
+    restart: unless-stopped
+    ports:
+      - "8081:8080"
+    environment:
+      HOP_CONFIG_FOLDER: /hop/config
+      HOP_AUDIT_FOLDER: /hop/audit
+      HOP_PROJECT_NAME: bi-learn
+      HOP_PROJECT_FOLDER: /hop/projects/bi-learn
+      HOP_SHARED_JDBC_FOLDERS: /usr/local/tomcat/jdbc-drivers,/hop/jdbc
+      HOP_WEB_SECURITY_MODE: BASIC
+      HOP_WEB_ADMIN_USER: admin
+      HOP_WEB_ADMIN_PASSWORD: admin
+    volumes:
+      - hop-config:/hop/config
+      - hop-audit:/hop/audit
+      - ./hop-projects:/hop/projects
+      - ./hop-jdbc:/hop/jdbc
+    depends_on:
+      postgres-dw:
+        condition: service_healthy
+    networks:
+      - bi-net
+
+  metabase:
+    image: metabase/metabase:v0.64.6
+    container_name: metabase
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      MB_DB_TYPE: postgres
+      MB_DB_DBNAME: metabase_app
+      MB_DB_PORT: 5432
+      MB_DB_USER: admin
+      MB_DB_PASS: admin
+      MB_DB_HOST: postgres-dw
+      JAVA_TIMEZONE: Africa/Douala
+    depends_on:
+      postgres-dw:
+        condition: service_healthy
+    networks:
+      - bi-net
+
+volumes:
+  pg-data:
+  hop-config:
+  hop-audit:
+
+networks:
+  bi-net:
+    driver: bridge
