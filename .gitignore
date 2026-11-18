@@ -1,0 +1,23 @@
+# Environnement & secrets
+.env
+.env.*.local
+
+# Pilotes JDBC externes (fichiers .jar volumineux ou propriétaires)
+hop-jdbc/*.jar
+
+# Fichiers temporaires et sauvegardes Apache Hop
+hop-projects/**/*.hpl~
+hop-projects/**/*.hwf~
+*.log
+*.tmp
+*.bak
+
+# Python (scripts d'automatisation / seeding)
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# OS & éditeurs
+.DS_Store
+Thumbs.db
