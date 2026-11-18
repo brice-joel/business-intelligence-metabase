@@ -11,7 +11,7 @@ Objectif : maîtriser la chaîne BI de bout en bout (**OLTP ➔ ETL ➔ Data War
 - [x] Configurer la connexion MCP entre Metabase et Antigravity
 - [x] Externaliser les variables sensibles dans `.env` / `.env.example` et configurer `.gitignore`
 - [x] Initialiser la documentation (`README.md`, `DOC.md`, `ROADMAP.md`) et le skill de synchronisation documentaire
-- [ ] Vérifier la création des 3 bases dans PostgreSQL (`ecommerce_oltp`, `dwh`, `metabase_app`)
+- [x] Vérifier la création des 3 bases dans PostgreSQL (`ecommerce_oltp`, `dwh`, `metabase_app`)
 
 **Notions acquises :** Isolation réseau Docker, *healthchecks*, séparation des secrets (`.env`), séparation OLTP / DWH / App DB.
 
@@ -20,8 +20,8 @@ Objectif : maîtriser la chaîne BI de bout en bout (**OLTP ➔ ETL ➔ Data War
 ## Phase 1 — Base Source OLTP E-Commerce (Workspace Laravel séparé)
 > **Objectif :** Simuler une vraie base de production e-commerce sur **10 ans** avec un volume réaliste et massif (plusieurs millions de lignes).
 
-- [ ] Créer le projet Laravel dans un dépôt/workspace frère (`../ecommerce-oltp`) et le connecter à `ecommerce_oltp` (`127.0.0.1:5433`)
-- [ ] Concevoir le schéma relationnel OLTP complet via migrations Laravel :
+- [x] Créer le projet Laravel dans un dépôt/workspace frère (`../ecommerce-oltp`) et le connecter à `ecommerce_oltp` (`127.0.0.1:5433`)
+- [x] Concevoir le schéma relationnel OLTP complet via migrations Laravel :
   - `users` (clients, dates d'inscription, pays/ville, segment)
   - `categories` (hiérarchie catégorie / sous-catégorie)
   - `products` (SKU, coût d'achat, prix catalogue, marge, statut)

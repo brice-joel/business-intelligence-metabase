@@ -24,11 +24,18 @@ L'infrastructure repose sur [docker-compose.yml](./docker-compose.yml) sur un r�
 ## 2. Bases de données & Dictionnaire de données
 
 ### 2.1 Base source OLTP (`ecommerce_oltp`)
-> *À compléter lors de la Phase 1 (migrations Laravel).*
+Schéma applicatif géré par migrations Laravel dans `../ecommerce-oltp/database/migrations/`.
 
 | Table | Description | Clé primaire | Colonne incrémentale | Volumétrie cible |
 | :--- | :--- | :--- | :--- | :--- |
-| *(À définir)* | | | | |
+| `users` | Clients (pays, ville, segment `standard`/`vip`/`b2b`, canal d'acquisition) | `id` | `updated_at` | 100k – 500k |
+| `categories` | Hiérarchie catégories / sous-catégories (`parent_id`) | `id` | `updated_at` | ~40 |
+| `products` | Catalogue produits (`sku`, `cost_price`, `list_price`, `status`) | `id` | `updated_at` | ~500 |
+| `orders` | Commandes clients (`order_number`, `status`, montants, `ordered_at`) | `id` | `updated_at` | 100k ➔ 2M+ |
+| `order_items` | Lignes de commande (`quantity`, `unit_price`, `unit_cost`, `line_total`) | `id` | `updated_at` | 250k ➔ 5M+ |
+| `payments` | Paiements associés aux commandes (`payment_method`, `status`, `paid_at`) | `id` | `updated_at` | 100k ➔ 2M+ |
+| `shipments` | Expéditions (`carrier`, `status`, `shipped_at`, `delivered_at`) | `id` | `updated_at` | ~90k ➔ 1.8M+ |
+| `returns` | Retours & remboursements (`reason`, `refund_amount`, `returned_at`) | `id` | `updated_at` | ~7k ➔ 150k+ |
 
 ### 2.2 Data Warehouse (`dwh`)
 Le Data Warehouse est organisé en 3 schémas :
