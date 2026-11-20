@@ -44,11 +44,16 @@ Le Data Warehouse est organisé en 3 schémas :
 - **`mart`** : modèle dimensionnel en étoile (faits et dimensions) consommé par Metabase.
 
 #### Tables `mart` (Star Schema)
-> *À compléter lors de la Phase 2.*
+Définies dans [03_mart_star_schema.sql](./sql/dwh/03_mart_star_schema.sql).
 
 | Table | Type (Fait / Dimension) | Grain / Clé | Description |
 | :--- | :--- | :--- | :--- |
-| *(À définir)* | | | |
+| `mart.dim_date` | Dimension | `date_key` (`YYYYMMDD`) | Calendrier pré-généré de 2015 à 2027 (trimestre, semaine, week-end) |
+| `mart.dim_customer` | Dimension | `customer_sk` (`customer_id`) | Clients nettoyés (pays, ville, segment, canal d'acquisition) |
+| `mart.dim_product` | Dimension (SCD2) | `product_sk` (`product_id`) | Catalogue avec hiérarchie catégorie/sous-catégorie et suivi historique |
+| `mart.dim_payment_method` | Dimension | `payment_method_sk` | Référentiel des moyens de paiement |
+| `mart.fact_orders` | Fait | `order_id` (1 commande) | Montants, remises, livraison (`delivery_days`), retours/remboursements |
+| `mart.fact_order_items` | Fait | `order_item_id` (1 article) | Quantités, CA brut/net, coût d'achat (`cogs_amount`) et marge brute |
 
 ---
 

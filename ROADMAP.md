@@ -44,13 +44,13 @@ Objectif : maîtriser la chaîne BI de bout en bout (**OLTP ➔ ETL ➔ Data War
 ## Phase 2 — Architecture & Modélisation du Data Warehouse (`dwh`)
 > **Objectif :** Concevoir la base analytique OLAP selon l'architecture **Médaillon** et le modèle en étoile de **Kimball**.
 
-- [ ] Créer les 3 schémas dans `dwh` via scripts SQL versionnés (`sql/dwh/`) :
+- [x] Créer les 3 schémas dans `dwh` via scripts SQL versionnés (`sql/dwh/`) :
   - `raw` *(Bronze)* : miroir brut des extractions OLTP + métadonnées d'ingestion (`_ingested_at`)
   - `staging` *(Silver)* : données nettoyées, typées, dédupliquées, règles métier appliquées
   - `mart` *(Gold)* : modèle en étoile prêt pour la BI
-- [ ] Créer la table **`mart.dim_date`** couvrant les 10+ années (année, trimestre, mois, semaine, jour férié/week-end, saison)
-- [ ] Concevoir les dimensions (`dim_customer`, `dim_product`, `dim_payment_method`, `dim_geography`) avec clés de substitution (*surrogate keys*)
-- [ ] Concevoir les tables de faits (`fact_order_items`, `fact_orders`, `fact_returns`) avec granularité claire (*grain*)
+- [x] Créer la table **`mart.dim_date`** couvrant les 10+ années (année, trimestre, mois, semaine, jour férié/week-end, saison)
+- [x] Concevoir les dimensions (`dim_customer`, `dim_product`, `dim_payment_method`, `dim_geography`) avec clés de substitution (*surrogate keys*)
+- [x] Concevoir les tables de faits (`fact_order_items`, `fact_orders`, `fact_returns`) avec granularité claire (*grain*)
 - [ ] Gérer au moins une **SCD (Slowly Changing Dimension)** (ex. suivi des changements de prix ou de catégorie produit dans le temps)
 
 **Notions apprises :** OLTP vs OLAP, granularité d'une table de faits, clés naturelles vs *surrogate keys*, Star Schema, SCD Type 1 & Type 2.
