@@ -89,13 +89,13 @@ Objectif : maîtriser la chaîne BI de bout en bout (**OLTP ➔ ETL ➔ Data War
 ## Phase 5 — Couche Sémantique & Dashboards (Metabase)
 > **Objectif :** Transformer les données du `mart` en indicateurs métier fiables et tableaux de bord actionnables.
 
-- [ ] Configurer la gouvernance dans Metabase : masquer `raw` et `staging`, n'exposer que `mart`, configurer les types sémantiques (devises, dates, FK)
+- [x] Configurer la gouvernance dans Metabase : masquer `raw` et `staging`, n'exposer que `mart`, configurer les types sémantiques (devises, dates, FK)
 - [ ] Définir des **Modèles & Métriques** réutilisables (CA Brut, CA Net hors retours/annulations, Marge Brute, Panier Moyen AOV, LTV, Taux de retour)
 - [ ] Construire **3 dashboards orientés métier** :
-  1. **Direction / Exécutif** : CA, marge, croissance YoY sur 10 ans, saisonnalité, top pays/catégories
-  2. **Catalogue & Produits** : top/flop produits, marges par catégorie, impact des remises, taux de retour
-  3. **Clients & Rétention** : nouveaux vs récurrents, analyse de cohortes, fréquence d'achat, LTV
-- [ ] Ajouter des filtres interactifs (période, catégorie, pays, statut) et vérifier la fluidité sous forte volumétrie
+  1. [x] **Direction / Exécutif** : CA, marge, croissance YoY sur 10 ans, saisonnalité, top pays/catégories
+  2. [x] **Catalogue & Produits** : top/flop produits, marges par catégorie, impact des remises, taux de retour
+  3. [ ] **Clients & Rétention** : nouveaux vs récurrents, analyse de cohortes, fréquence d'achat, LTV
+- [x] Ajouter des filtres interactifs (période, catégorie, pays, statut) et vérifier la fluidité sous forte volumétrie
 
 **Notions apprises :** Couche sémantique, calcul de KPIs sans biais, analyse de cohortes, storytelling visuel BI.
 

@@ -78,11 +78,17 @@ Définies dans [03_mart_star_schema.sql](./sql/dwh/03_mart_star_schema.sql).
 
 ## 4. Couche Sémantique & KPIs Metabase
 
-> *À compléter lors de la Phase 5.*
+- **Gouvernance** : schémas `raw` et `staging` masqués dans Metabase ; seul le schéma `mart` est exposé. Types sémantiques configurés (devises EUR, `year_num` en Catégorie, `shipping_country` / `country_code` en Catégorie, FK vers dimensions).
 
-| Indicateur (KPI) | Définition métier | Formule / Règle SQL | Dashboard associé |
+| Indicateur (KPI) | Définition métier | Formule / Règle | Dashboard associé |
 | :--- | :--- | :--- | :--- |
-| *(À définir)* | | | |
+| **CA Total Net (€)** | Somme des commandes complétées | `SUM(total_amount)` (`order_status = 'completed'`) | `01 - Dashboard Exécutif E-Commerce` |
+| **CA Annuel** | Évolution du CA sur 10 ans par année | `SUM(total_amount)` groupé par `dim_date.full_date` (Année) | `01 - Dashboard Exécutif E-Commerce` |
+| **CA & Marge par Catégorie** | CA net et marge brute par catégorie produit | `SUM(net_amount)`, `SUM(gross_margin_amount)` par `dim_product.category_name` | `01 - Dashboard Exécutif E-Commerce` |
+| **Performance par Segment** | CA, Panier Moyen (AOV) et volume par segment | `SUM`, `AVG`, `COUNT` par `dim_customer.segment` | `01 - Dashboard Exécutif E-Commerce` |
+| **Top 10 Produits par Marge** | Produits les plus rentables | `SUM(gross_margin_amount)` top 10 par `dim_product` | `02 - Catalogue & Produits` |
+| **Marge & Remises par Sous-Catégorie** | Taux de marge (%) et total des remises | `SUM(gross_margin_amount) / SUM(net_amount)` | `02 - Catalogue & Produits` |
+| **Logistique & Retours** | Délai moyen de livraison et taux de retour | `AVG(delivery_days)`, `% is_returned` par `carrier` | `02 - Catalogue & Produits` |
 
 ---
 
