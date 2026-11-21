@@ -72,7 +72,7 @@ Définies dans [03_mart_star_schema.sql](./sql/dwh/03_mart_star_schema.sql).
 ### 3.2 Workflows (`.hwf`)
 | Fichier | Fréquence / Déclenchement | Rôle |
 | :--- | :--- | :--- |
-| *(À créer)* | | |
+| `workflows/wf_main_ecommerce_etl.hwf` | Manuel (ou planifié) | Orchestre séquentiellement `01 ➔ 02 ➔ 03 ➔ 04` avec gestion d'erreur (`Abort`) |
 
 ---
 

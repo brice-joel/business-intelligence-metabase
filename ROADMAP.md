@@ -62,10 +62,10 @@ Objectif : maîtriser la chaîne BI de bout en bout (**OLTP ➔ ETL ➔ Data War
 
 - [x] Configurer les connexions PostgreSQL dans Hop en utilisant uniquement les variables d'environnement (`${OLTP_DB_HOST}`, `${DW_DB_NAME}`, etc.)
 - [ ] **Pipeline 1 (`OLTP ➔ raw`)** : extraction initiale (*full load*) puis **chargement incrémental** basé sur `updated_at` (table de watermark / suivi d'exécution)
-- [ ] **Pipeline 2 (`raw ➔ staging`)** : nettoyage des chaînes, normalisation des emails/pays, gestion des valeurs nulles, déduplication et calcul des colonnes dérivées (marge unitaire, délai de livraison)
-- [ ] **Pipeline 3 (`staging ➔ mart`)** : alimentation des dimensions (*Dimension Lookup / Update*) puis des tables de faits
-- [ ] **Workflow d'orchestration (`.hwf`)** : enchaîner les pipelines dans le bon ordre, gérer les erreurs et journaliser les exécutions
-- [ ] Tester l'**idempotence** (relancer 2 fois le workflow sans créer de doublons)
+- [x] **Pipeline 2 (`raw ➔ staging`)** : nettoyage des chaînes, normalisation des emails/pays, gestion des valeurs nulles, déduplication et calcul des colonnes dérivées (marge unitaire, délai de livraison)
+- [x] **Pipeline 3 (`staging ➔ mart`)** : alimentation des dimensions (*Dimension Lookup / Update*) puis des tables de faits
+- [x] **Workflow d'orchestration (`.hwf`)** : enchaîner les pipelines dans le bon ordre, gérer les erreurs et journaliser les exécutions
+- [x] Tester l'**idempotence** (relancer 2 fois le workflow sans créer de doublons)
 
 **Notions apprises :** Pipelines vs Workflows, extraction incrémentale (CDC/Watermark), *upsert*, idempotence, gestion des logs et erreurs ETL.
 
