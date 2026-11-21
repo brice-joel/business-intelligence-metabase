@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pipeline>
+  <info>
+    <name>02_transform_raw_to_staging</name>
+    <name_sync_with_filename>Y</name_sync_with_filename>
+    <description>Nettoyage, normalisation et pré-calculs de dwh.raw vers dwh.staging</description>
+    <extended_description/>
+    <pipeline_version/>
+    <pipeline_type>Normal</pipeline_type>
+    <parameters/>
+  </info>
+  <notepads/>
+  <order>
+    <hop><from>raw.users</from><to>String operations</to><enabled>Y</enabled></hop>
+    <hop><from>String operations</from><to>If null</to><enabled>Y</enabled></hop>
+    <hop><from>If null</from><to>staging.stg_customers</to><enabled>Y</enabled></hop>
+    <hop><from>raw.products</from><to>staging.stg_products</to><enabled>Y</enabled></hop>
+    <hop><from>raw.orders</from><to>staging.stg_orders</to><enabled>Y</enabled></hop>
+    <hop><from>raw.order_items</from><to>staging.stg_order_items</to><enabled>Y</enabled></hop>
+  </order>
+
+  <!-- 1. stg_customers -->
+  <transform>
+    <name>raw.users</name>
+    <type>TableInput</type>
+    <connection>dwh</connection>
+    <sql>SELECT id AS customer_id, name AS full_name, email, country_code, city, segment, acquisition_channel, created_at AS signup_at, updated_at FROM raw.users</sql>
+    <limit>0</limit>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <GUI><xloc>100</xloc><yloc>80</yloc></GUI>
+  </transform>
+  <transform>
+    <name>String operations</name>
+    <type>StringOperations</type>
+    <fields>
+      <field>
+        <in_stream_name>full_name</in_stream_name>
+        <out_stream_name/>
+        <trim_type>both</trim_type>
+        <lower_upper>none</lower_upper>
+        <padding_type>none</padding_type>
+        <pad_char/>
+        <pad_len/>
+        <init_cap>N</init_cap>
+        <mask_xml>None</mask_xml>
+        <digits>none</digits>
+        <remove_special_characters>none</remove_special_characters>
+      </field>
+      <field>
+        <in_stream_name>email</in_stream_name>
+        <out_stream_name/>
+        <trim_type>both</trim_type>
+        <lower_upper>lower</lower_upper>
+        <padding_type>none</padding_type>
+        <pad_char/>
+        <pad_len/>
+        <init_cap>N</init_cap>
+        <mask_xml>None</mask_xml>
+        <digits>none</digits>
+        <remove_special_characters>none</remove_special_characters>
+      </field>
+      <field>
+        <in_stream_name>country_code</in_stream_name>
+        <out_stream_name/>
+        <trim_type>both</trim_type>
+        <lower_upper>upper</lower_upper>
+        <padding_type>none</padding_type>
+        <pad_char/>
+        <pad_len/>
+        <init_cap>N</init_cap>
+        <mask_xml>None</mask_xml>
+        <digits>none</digits>
+        <remove_special_characters>none</remove_special_characters>
+      </field>
+      <field>
+        <in_stream_name>city</in_stream_name>
+        <out_stream_name/>
+        <trim_type>both</trim_type>
+        <lower_upper>none</lower_upper>
+        <padding_type>none</padding_type>
+        <pad_char/>
+        <pad_len/>
+        <init_cap>Y</init_cap>
+        <mask_xml>None</mask_xml>
+        <digits>none</digits>
+        <remove_special_characters>none</remove_special_characters>
+      </field>
+    </fields>
+    <GUI><xloc>280</xloc><yloc>80</yloc></GUI>
+  </transform>
+  <transform>
+    <name>If null</name>
+    <type>IfNull</type>
+    <replaceAllByValue/>
+    <replaceAllMask/>
+    <selectFields>Y</selectFields>
+    <selectValuesType>N</selectValuesType>
+    <setEmptyStringAll>N</setEmptyStringAll>
+    <fields>
+      <field>
+        <name>city</name>
+        <value>Unknown</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+      </field>
+      <field>
+        <name>acquisition_channel</name>
+        <value>Unknown</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+      </field>
+    </fields>
+    <GUI><xloc>460</xloc><yloc>80</yloc></GUI>
+  </transform>
+  <transform>
+    <name>staging.stg_customers</name>
+    <type>TableOutput</type>
+    <connection>dwh</connection>
+    <schema>staging</schema>
+    <table>stg_customers</table>
+    <commit>5000</commit>
+    <truncate>Y</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <specify_fields>N</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <GUI><xloc>640</xloc><yloc>80</yloc></GUI>
+  </transform>
+
+  <!-- 2. stg_products -->
+  <transform>
+    <name>raw.products</name>
+    <type>TableInput</type>
+    <connection>dwh</connection>
+    <sql>SELECT
+    p.id AS product_id,
+    TRIM(p.sku) AS sku,
+    TRIM(p.name) AS product_name,
+    COALESCE(parent_cat.name, cat.name, 'Uncategorized') AS category_name,
+    COALESCE(cat.name, 'Uncategorized') AS subcategory_name,
+    p.cost_price,
+    p.list_price,
+    LOWER(TRIM(p.status)) AS status,
+    p.updated_at
+FROM raw.products p
+LEFT JOIN raw.categories cat ON cat.id = p.category_id
+LEFT JOIN raw.categories parent_cat ON parent_cat.id = cat.parent_id</sql>
+    <limit>0</limit>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <GUI><xloc>100</xloc><yloc>200</yloc></GUI>
+  </transform>
+  <transform>
+    <name>staging.stg_products</name>
+    <type>TableOutput</type>
+    <connection>dwh</connection>
+    <schema>staging</schema>
+    <table>stg_products</table>
+    <commit>5000</commit>
+    <truncate>Y</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <specify_fields>N</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <GUI><xloc>640</xloc><yloc>200</yloc></GUI>
+  </transform>
+
+  <!-- 3. stg_orders -->
+  <transform>
+    <name>raw.orders</name>
+    <type>TableInput</type>
+    <connection>dwh</connection>
+    <sql>SELECT
+    o.id AS order_id,
+    TRIM(o.order_number) AS order_number,
+    o.user_id AS customer_id,
+    LOWER(TRIM(o.status)) AS order_status,
+    UPPER(TRIM(o.currency)) AS currency,
+    o.subtotal_amount,
+    o.discount_amount,
+    o.shipping_amount,
+    o.total_amount,
+    UPPER(TRIM(o.shipping_country)) AS shipping_country,
+    COALESCE(INITCAP(TRIM(o.shipping_city)), 'Unknown') AS shipping_city,
+    COALESCE(LOWER(TRIM(p.payment_method)), 'unknown') AS payment_method,
+    COALESCE(LOWER(TRIM(p.status)), 'unknown') AS payment_status,
+    s.carrier,
+    ROUND((EXTRACT(EPOCH FROM (s.delivered_at - s.shipped_at)) / 86400.0)::NUMERIC, 2) AS delivery_days,
+    COALESCE(r.total_refund, 0) AS refund_amount,
+    (r.order_id IS NOT NULL) AS is_returned,
+    o.ordered_at,
+    o.updated_at
+FROM raw.orders o
+LEFT JOIN raw.payments p ON p.order_id = o.id
+LEFT JOIN raw.shipments s ON s.order_id = o.id
+LEFT JOIN (
+    SELECT order_id, SUM(refund_amount) AS total_refund
+    FROM raw.returns
+    GROUP BY order_id
+) r ON r.order_id = o.id</sql>
+    <limit>0</limit>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <GUI><xloc>100</xloc><yloc>320</yloc></GUI>
+  </transform>
+  <transform>
+    <name>staging.stg_orders</name>
+    <type>TableOutput</type>
+    <connection>dwh</connection>
+    <schema>staging</schema>
+    <table>stg_orders</table>
+    <commit>5000</commit>
+    <truncate>Y</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <specify_fields>N</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <GUI><xloc>640</xloc><yloc>320</yloc></GUI>
+  </transform>
+
+  <!-- 4. stg_order_items -->
+  <transform>
+    <name>raw.order_items</name>
+    <type>TableInput</type>
+    <connection>dwh</connection>
+    <sql>SELECT
+    oi.id AS order_item_id,
+    oi.order_id,
+    TRIM(o.order_number) AS order_number,
+    o.user_id AS customer_id,
+    oi.product_id,
+    LOWER(TRIM(o.status)) AS order_status,
+    COALESCE(LOWER(TRIM(p.payment_method)), 'unknown') AS payment_method,
+    oi.quantity,
+    oi.unit_price,
+    oi.unit_cost,
+    oi.discount_amount,
+    ROUND((oi.unit_price * oi.quantity)::NUMERIC, 2) AS gross_amount,
+    ROUND(oi.line_total::NUMERIC, 2) AS net_amount,
+    ROUND((oi.unit_cost * oi.quantity)::NUMERIC, 2) AS cogs_amount,
+    ROUND((oi.line_total - (oi.unit_cost * oi.quantity))::NUMERIC, 2) AS gross_margin_amount,
+    o.ordered_at,
+    oi.updated_at
+FROM raw.order_items oi
+INNER JOIN raw.orders o ON o.id = oi.order_id
+LEFT JOIN raw.payments p ON p.order_id = o.id</sql>
+    <limit>0</limit>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <GUI><xloc>100</xloc><yloc>440</yloc></GUI>
+  </transform>
+  <transform>
+    <name>staging.stg_order_items</name>
+    <type>TableOutput</type>
+    <connection>dwh</connection>
+    <schema>staging</schema>
+    <table>stg_order_items</table>
+    <commit>5000</commit>
+    <truncate>Y</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <specify_fields>N</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <GUI><xloc>640</xloc><yloc>440</yloc></GUI>
+  </transform>
+</pipeline>

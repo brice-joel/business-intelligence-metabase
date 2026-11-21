@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pipeline>
+  <info>
+    <name>01_extract_oltp_to_raw</name>
+    <name_sync_with_filename>Y</name_sync_with_filename>
+    <description>Extraction complète de ecommerce_oltp vers dwh.raw</description>
+    <extended_description/>
+    <pipeline_version/>
+    <pipeline_type>Normal</pipeline_type>
+    <parameters/>
+  </info>
+  <notepads/>
+  <order>
+    <hop><from>oltp.users</from><to>dwh.raw.users</to><enabled>Y</enabled></hop>
+    <hop><from>oltp.categories</from><to>dwh.raw.categories</to><enabled>Y</enabled></hop>
+    <hop><from>oltp.products</from><to>dwh.raw.products</to><enabled>Y</enabled></hop>
+    <hop><from>oltp.orders</from><to>dwh.raw.orders</to><enabled>Y</enabled></hop>
+    <hop><from>oltp.order_items</from><to>dwh.raw.order_items</to><enabled>Y</enabled></hop>
+    <hop><from>oltp.payments</from><to>dwh.raw.payments</to><enabled>Y</enabled></hop>
+    <hop><from>oltp.shipments</from><to>dwh.raw.shipments</to><enabled>Y</enabled></hop>
+    <hop><from>oltp.returns</from><to>dwh.raw.returns</to><enabled>Y</enabled></hop>
+  </order>
+
+  <!-- 1. users -->
+  <transform>
+    <name>oltp.users</name>
+    <type>TableInput</type>
+    <connection>ecommerce_oltp</connection>
+    <sql>SELECT id, name, email, country_code, city, segment, acquisition_channel, created_at, updated_at FROM users</sql>
+    <limit>0</limit>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <GUI><xloc>120</xloc><yloc>80</yloc></GUI>
+  </transform>
+  <transform>
+    <name>dwh.raw.users</name>
+    <type>TableOutput</type>
+    <connection>dwh</connection>
+    <schema>raw</schema>
+    <table>users</table>
+    <commit>5000</commit>
+    <truncate>Y</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <specify_fields>N</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <GUI><xloc>380</xloc><yloc>80</yloc></GUI>
+  </transform>
+
+  <!-- 2. categories -->
+  <transform>
+    <name>oltp.categories</name>
+    <type>TableInput</type>
+    <connection>ecommerce_oltp</connection>
+    <sql>SELECT id, parent_id, name, slug, created_at, updated_at FROM categories</sql>
+    <limit>0</limit>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <GUI><xloc>120</xloc><yloc>160</yloc></GUI>
+  </transform>
+  <transform>
+    <name>dwh.raw.categories</name>
+    <type>TableOutput</type>
+    <connection>dwh</connection>
+    <schema>raw</schema>
+    <table>categories</table>
+    <commit>5000</commit>
+    <truncate>Y</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <specify_fields>N</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <GUI><xloc>380</xloc><yloc>160</yloc></GUI>
+  </transform>
+
+  <!-- 3. products -->
+  <transform>
+    <name>oltp.products</name>
+    <type>TableInput</type>
+    <connection>ecommerce_oltp</connection>
+    <sql>SELECT id, category_id, sku, name, cost_price, list_price, status, created_at, updated_at FROM products</sql>
+    <limit>0</limit>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <GUI><xloc>120</xloc><yloc>240</yloc></GUI>
+  </transform>
+  <transform>
+    <name>dwh.raw.products</name>
+    <type>TableOutput</type>
+    <connection>dwh</connection>
+    <schema>raw</schema>
+    <table>products</table>
+    <commit>5000</commit>
+    <truncate>Y</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <specify_fields>N</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <GUI><xloc>380</xloc><yloc>240</yloc></GUI>
+  </transform>
+
+  <!-- 4. orders -->
+  <transform>
+    <name>oltp.orders</name>
+    <type>TableInput</type>
+    <connection>ecommerce_oltp</connection>
+    <sql>SELECT id, user_id, order_number, status, currency, subtotal_amount, discount_amount, shipping_amount, total_amount, shipping_country, shipping_city, ordered_at, created_at, updated_at FROM orders</sql>
+    <limit>0</limit>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <GUI><xloc>120</xloc><yloc>320</yloc></GUI>
+  </transform>
+  <transform>
+    <name>dwh.raw.orders</name>
+    <type>TableOutput</type>
+    <connection>dwh</connection>
+    <schema>raw</schema>
+    <table>orders</table>
+    <commit>5000</commit>
+    <truncate>Y</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <specify_fields>N</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <GUI><xloc>380</xloc><yloc>320</yloc></GUI>
+  </transform>
+
+  <!-- 5. order_items -->
+  <transform>
+    <name>oltp.order_items</name>
+    <type>TableInput</type>
+    <connection>ecommerce_oltp</connection>
+    <sql>SELECT id, order_id, product_id, quantity, unit_price, unit_cost, discount_amount, line_total, created_at, updated_at FROM order_items</sql>
+    <limit>0</limit>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <GUI><xloc>120</xloc><yloc>400</yloc></GUI>
+  </transform>
+  <transform>
+    <name>dwh.raw.order_items</name>
+    <type>TableOutput</type>
+    <connection>dwh</connection>
+    <schema>raw</schema>
+    <table>order_items</table>
+    <commit>5000</commit>
+    <truncate>Y</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <specify_fields>N</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <GUI><xloc>380</xloc><yloc>400</yloc></GUI>
+  </transform>
+
+  <!-- 6. payments -->
+  <transform>
+    <name>oltp.payments</name>
+    <type>TableInput</type>
+    <connection>ecommerce_oltp</connection>
+    <sql>SELECT id, order_id, payment_method, status, amount, paid_at, created_at, updated_at FROM payments</sql>
+    <limit>0</limit>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <GUI><xloc>120</xloc><yloc>480</yloc></GUI>
+  </transform>
+  <transform>
+    <name>dwh.raw.payments</name>
+    <type>TableOutput</type>
+    <connection>dwh</connection>
+    <schema>raw</schema>
+    <table>payments</table>
+    <commit>5000</commit>
+    <truncate>Y</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <specify_fields>N</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <GUI><xloc>380</xloc><yloc>480</yloc></GUI>
+  </transform>
+
+  <!-- 7. shipments -->
+  <transform>
+    <name>oltp.shipments</name>
+    <type>TableInput</type>
+    <connection>ecommerce_oltp</connection>
+    <sql>SELECT id, order_id, carrier, status, shipped_at, delivered_at, created_at, updated_at FROM shipments</sql>
+    <limit>0</limit>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <GUI><xloc>120</xloc><yloc>560</yloc></GUI>
+  </transform>
+  <transform>
+    <name>dwh.raw.shipments</name>
+    <type>TableOutput</type>
+    <connection>dwh</connection>
+    <schema>raw</schema>
+    <table>shipments</table>
+    <commit>5000</commit>
+    <truncate>Y</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <specify_fields>N</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <GUI><xloc>380</xloc><yloc>560</yloc></GUI>
+  </transform>
+
+  <!-- 8. returns -->
+  <transform>
+    <name>oltp.returns</name>
+    <type>TableInput</type>
+    <connection>ecommerce_oltp</connection>
+    <sql>SELECT id, order_id, order_item_id, reason, refund_amount, status, returned_at, created_at, updated_at FROM returns</sql>
+    <limit>0</limit>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <GUI><xloc>120</xloc><yloc>640</yloc></GUI>
+  </transform>
+  <transform>
+    <name>dwh.raw.returns</name>
+    <type>TableOutput</type>
+    <connection>dwh</connection>
+    <schema>raw</schema>
+    <table>returns</table>
+    <commit>5000</commit>
+    <truncate>Y</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <specify_fields>N</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <GUI><xloc>380</xloc><yloc>640</yloc></GUI>
+  </transform>
+</pipeline>

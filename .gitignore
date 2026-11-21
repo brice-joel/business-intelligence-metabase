@@ -1,6 +1,7 @@
 # Environnement & secrets
 .env
 .env.*.local
+hop-projects/*-config.json
 
 # Pilotes JDBC externes (fichiers .jar volumineux ou propriétaires)
 hop-jdbc/*.jar

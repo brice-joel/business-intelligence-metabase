@@ -60,7 +60,7 @@ Objectif : maîtriser la chaîne BI de bout en bout (**OLTP ➔ ETL ➔ Data War
 ## Phase 3 — Pipelines ETL & Orchestration (Apache Hop)
 > **Objectif :** Construire des flux robustes, idempotents et paramétrés dans Apache Hop (`http://localhost:8081`).
 
-- [ ] Configurer les connexions PostgreSQL dans Hop en utilisant uniquement les variables d'environnement (`${OLTP_DB_HOST}`, `${DW_DB_NAME}`, etc.)
+- [x] Configurer les connexions PostgreSQL dans Hop en utilisant uniquement les variables d'environnement (`${OLTP_DB_HOST}`, `${DW_DB_NAME}`, etc.)
 - [ ] **Pipeline 1 (`OLTP ➔ raw`)** : extraction initiale (*full load*) puis **chargement incrémental** basé sur `updated_at` (table de watermark / suivi d'exécution)
 - [ ] **Pipeline 2 (`raw ➔ staging`)** : nettoyage des chaînes, normalisation des emails/pays, gestion des valeurs nulles, déduplication et calcul des colonnes dérivées (marge unitaire, délai de livraison)
 - [ ] **Pipeline 3 (`staging ➔ mart`)** : alimentation des dimensions (*Dimension Lookup / Update*) puis des tables de faits

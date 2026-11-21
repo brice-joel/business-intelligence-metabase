@@ -64,7 +64,10 @@ Définies dans [03_mart_star_schema.sql](./sql/dwh/03_mart_star_schema.sql).
 ### 3.1 Pipelines (`.hpl`)
 | Fichier | Couche source ➔ cible | Stratégie (Full / Incrémental / Upsert) | Notes |
 | :--- | :--- | :--- | :--- |
-| *(À créer)* | | | |
+| `pipelines/01_extract_oltp_to_raw.hpl` | `ecommerce_oltp` ➔ `dwh.raw` | Full Load initial (`Truncate` + Batch `5000`) | Extrait les 8 tables en parallèle sans les colonnes sensibles |
+| `pipelines/02_transform_raw_to_staging.hpl` | `dwh.raw` ➔ `dwh.staging` | `Truncate` + Batch `5000` (Hop Transforms + SQL Pushdown) | Nettoie (`String operations`, `If Null`), déduplique et pré-calcule marges & délais |
+| `pipelines/03_load_dimensions.hpl` | `dwh.staging` ➔ `dwh.mart` | Upsert (`Insert / Update` SCD Type 1, Batch `5000`) | Charge `dim_customer` et `dim_product` avec génération des *surrogate keys* (`*_sk`) |
+| `pipelines/04_load_facts.hpl` | `dwh.staging` ➔ `dwh.mart` | `Truncate` + Batch `5000` (Lookup `*_sk` en SQL Pushdown) | Charge `fact_orders` et `fact_order_items` avec clés `date_key`, `customer_sk`, `product_sk` |
 
 ### 3.2 Workflows (`.hwf`)
 | Fichier | Fréquence / Déclenchement | Rôle |
